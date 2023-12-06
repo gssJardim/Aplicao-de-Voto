@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt_PT">
+	<body>
+		<section>
+			<h2>Apoiar Projeto Lei</h2>
+		  	<div class="error" th:text="${error}"></div>
+		  	
+		  	<form action="#" th:action="@{/projetos-lei/apoiar}" th:object="${projetolei}" method="post">
+			<label for="cidadao">Cidadao:</label>
+            <select id="cidadao" name="cidadao" th:field="*{cidadao}" class="border" required>
+				<option th:each="cidadao : ${cidadaos}" th:value="${cidadao.id}" th:text="${cidadao.nome}"></option>
+			</select>
+			<label for="projetoLei">Projeto Lei:</label>
+			<select id="projetoLei" name="projetoLei" th:field="*{projetoLei}" class="border" required>
+				<option th:each="projetoLei : ${projetosLei}" th:value="${projetoLei.id}" th:text="${projetoLei.titulo}"></option>
+			</select>
+			<button id="apoiar" class="bg-slate-300 border rounded-xl p-4">Apoiar</button>
+			<p id="success" class="bg-green-100 text-green-500 p-2 rounded-xl self-center hidden"></p>
+			<p id="error" class="bg-red-100 text-red-500 p-2 rounded-xl self-center hidden"></p>
+			<script>
+					window.addEventListener('load', () => {
+    const button = document.querySelector('#apoiar');
+    button.addEventListener('click', async () => {
+        const cidadaoSelect = document.querySelector('#cidadao');
+        const cidadaoId = cidadaoSelect.value;
+        const projetoLeiSelect = document.querySelector('#projetoLei');
+        const projetoLeiId = projetoLeiSelect.value;
+
+        // Reset messages
+        const successMessage = document.querySelector('#success');
+        const errorMessage = document.querySelector('#error');
+        successMessage.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+
+        const response = await fetch('/projetos-lei/apoiar/' + cidadaoId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                cidadaoId,
+                projetoLeiId,
+            }),
+        });
+        console.log(response);
+
+        if (response.ok) {
+            successMessage.classList.remove('hidden');
+        } else {
+            const body = await response.json();
+            errorMessage.innerHTML = body.message;
+            errorMessage.classList.remove('hidden');
+        }
+    });
+});
+				</script>
+			</form>
+		</section>
+	</body>
+</html>

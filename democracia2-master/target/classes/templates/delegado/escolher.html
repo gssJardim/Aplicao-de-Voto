@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt_PT">
+	<head>
+		<meta charset="ISO-8859-1" />
+		<title>Spring Boot Application</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+
+	<body>
+		<div class="flex gap-4">
+			<div class="flex flex-col gap-2">
+				<div class="flex flex-col gap-2 pb-2">
+					<p class="border-b border-slate-200 pb-2"><b>Autenticação</b></p>
+					<span>Criar conta</span>
+					<span>Login</span>
+					<span>Logout</span>
+				</div>
+				<div class="flex flex-col gap-2">
+					<p class="border-b border-slate-200 pb-2"><b>Projetos Lei</b></p>
+					<a href="/projetos-lei/criar">Criar</a>
+					<a href="/projetos-lei/ver-nao-expirados">Ver não expirados</a>
+					<a href="/projetos-lei/ver-em-votacao">Ver em votação</a>
+					<a href="/projetos-lei/apoiar">Apoiar</a>
+					<a href="/projetos-lei/votar">Votar</a>
+				</div>
+				<div class="flex flex-col gap-2">
+					<p class="border-b border-slate-200 pb-2"><b>Delegado</b></p>
+					<a href="/delegado/escolher">Escolher delegado</a>
+					<span>Torna-me delegado</span>
+				</div>
+			</div>
+			<div class="flex-grow p-8">
+				<h1 class="text-2xl pb-4">Escolher Delegado</h1>
+				<form action="#" th:action="@{/delegado/escolher}" th:object="${delegado}" method="post">
+				<p><label for="cidadao">Cidadão:</label></p>
+					<select id="cidadao" name="cidadao" class="border rounded-xl p-2">
+					<option th:each="cidadao: ${cidadaos}" th:text="${cidadao.nome}" th:value="${cidadao.id}"></option>
+				</select>
+				<p><label for="tema">Tema:</label></p>
+				<select id="tema" name="tema" class="border rounded-xl p-2">
+					<option th:each="tema: ${temas}" th:text="${tema.nome}" th:value="${tema.id}"></option>
+				</select>
+				<p><label for="delegado">Delegado:</label></p>
+					<select id="delegado" name="delegado" class="border rounded-xl p-2">
+					<option th:each="delegado: ${delegados}" th:text="${delegado.nome}" th:value="${delegado.id}"></option>
+				</select>
+				<button id="escolher" class="bg-slate-300 border rounded-xl p-4">Escolher</button>
+				<p id="success" class="bg-green-100 text-green-500 p-2 rounded-xl self-center hidden">Delegado escolhido com sucesso!</p>
+				<p id="error" class="bg-red-100 text-red-500 p-2 rounded-xl self-center hidden"></p>			
+				<script>
+						window.addEventListener('load', () => {
+							const button = document.querySelector('#escolher')
+							button.addEventListener('click', async () => {
+								const cidadaoSelect = document.querySelector('#cidadao')
+								const cidadaoId = cidadaoSelect.value
+								const temaSelect = document.querySelector('#tema')
+								const temaId = temaSelect.value
+								const delegadoSelect = document.querySelector('#delegado')
+								const delegadoId = delegadoSelect.value
+
+								// Reset messages
+								const successMessage = document.querySelector('#success')
+								const errorMessage = document.querySelector('#error')
+								successMessage.classList.add('hidden')
+								errorMessage.classList.add('hidden')
+
+								const response = await fetch('/delegado/escolher', {
+									method: 'GET',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({
+										cidadaoId,
+										temaId,
+										delegadoId,
+									}),
+								})
+								console.log(response)
+
+								if (response.ok) {
+									successMessage.classList.remove('hidden')
+								} else {
+									const body = await response.json()
+									errorMessage.innerHTML = body.message
+									errorMessage.classList.remove('hidden')
+								}
+							})
+						})
+					</script>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt_PT">
+  <body>
+	  <section>
+		  <h2>Add new Projeto Lei:</h2>
+		  <div class="error" th:text="${error}"></div>
+
+        <form action="#" th:action="@{/projetos-lei/criar}" th:object="${projetolei}" method="post">
+            <label for="titulo">Titulo:</label><input name="titulo" th:field="*{titulo}" /><br />
+            <label for="texto">Texto:</label><input name="texto" th:field="*{texto}" /><br />
+            <label for="anexoPDF">PDF:</label>
+            <input type="hidden" id="pdfbase64" name="anexoPDF" th:field="*{anexoPDF}"/>
+            <input type="file" id="anexoPDF" class="border" required>
+            <script>
+                window.addEventListener('load', () => {
+                    const pdf = document.querySelector('#anexoPDF')
+                    const pdfbase64 = document.querySelector('#pdfbase64')
+                    pdf.addEventListener('change', (event) => {
+                        const file = pdf.files[0]
+                        const reader = new FileReader()
+                        reader.readAsDataURL(file)
+                        reader.onload = () => {
+                            pdfbase64.value = reader.result
+                        }
+                    })
+                })
+            </script>
+            <label for="dataValidade">Data Validade:</label><input type="date" name="dataValidade" th:field="*{dataValidade}" /><br />
+            <script>
+                window.addEventListener('load', () => {
+                    const startTime = document.querySelector('#dataValidade')
+                    const today = new Date()
+                    const year = '' + today.getFullYear()
+                    const month = today.getMonth() + 1 < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1
+                    const day = today.getDate() < 10 ? '0' + today.getDate() : '' + today.getDate()
+                    const date = `${year}-${month}-${day}`
+                    startTime.value = date
+                })
+            </script>
+            <label for="tema">Tema:</label>
+            <select id="tema" name="tema" th:field="*{tema}" class="border" required>
+                <option th:each="tema : ${themes}" th:value="${tema.id}" th:text="${tema.nome}"></option>
+            </select>
+            <label for="proponente">Delegado:</label>
+			<select id="proponente" name="proponente" th:field="*{proponente}" class="border" required>
+				<option th:each="proponente : ${delegates}" th:value="${proponente.id}" th:text="${proponente.nome}"></option>
+			</select>
+			<button type="submit" class="border p-2 rounded-xl mt-4">Guardar projeto lei</button>
+			<p class="py-2 px-4 bg-green-100 text-green-600 rounded-xl hidden underline" id="success"></p>
+			<script>
+				window.addEventListener('load', () => {
+					const form = document.querySelector('form')
+					form.addEventListener('submit', async (e) => {
+						e.preventDefault()
+						 const formData = new FormData(form)
+
+                    const response = await fetch('/projetos-lei/criar', {
+                        method: 'POST',
+                        body: formData,
+                    })
+
+                    if (response.ok) {
+                        const { id } = await response.json()
+                        const success = document.querySelector('#success')
+                        success.innerHTML = ` <a href="/projetos-lei/${id}">Projeto adicionado com sucesso!</a>`
+                        success.classList.remove('hidden')
+                    }
+                })
+            })
+        </script>
+    </form>
+  </section>
+ </body>
+</html>

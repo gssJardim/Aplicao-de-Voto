@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt_PT">
+  <body>
+    <section>
+      <h2>Votar:</h2>
+      <div class="error" th:text="${error}"></div>
+      <form action="/votacao/votar" method="post">
+        <label for="cidadao">Cidadao:</label>
+        <select id="cidadao" name="cidadaoId" class="border" required>
+          <option th:each="cidadao : ${cidadaos}" th:value="${cidadao.id}" th:text="${cidadao.nome}"></option>
+        </select>
+        
+        <label for="projetoLei">Projeto Lei:</label>
+        <select id="projetoLei" name="projetoLeiDTO.id" th:field="*{projetoLeiDTO.id}" class="border" required>
+          <option th:each="projetoLei : ${projetosLei}" th:value="${projetoLei.id}" th:text="${projetoLei.titulo}"></option>
+        </select>
+        
+        <label for="tipoDeVoto">Tipo de Voto:</label>
+        <select id="tipoDeVoto" name="tipoDeVoto" class="border" required>
+          <option th:each="tipo : ${tipoDeVoto}" th:value="${tipo}" th:text="${tipo}"></option>
+        </select>
+        
+        <div class="flex">
+          <button id="votar" class="bg-slate-300 border rounded-xl p-4">Votar</button>
+        </div>
+        
+        <p id="success" class="bg-green-100 text-green-500 p-2 rounded-xl self-center hidden">Voto adicionado com sucesso!</p>
+        <p id="error" class="bg-red-100 text-red-500 p-2 rounded-xl self-center hidden"></p>
+      </form>
+
+      <script>
+        window.addEventListener('load', () => {
+          const button = document.querySelector('#votar');
+          button.addEventListener('click', async () => {
+            const cidadaoSelect = document.querySelector('#cidadao');
+            const cidadaoId = cidadaoSelect.value;
+            const projetoLeiSelect = document.querySelector('#projetoLei');
+            const projetoLeiId = projetoLeiSelect.value;
+            const tipoSelect = document.querySelector('#tipoDeVoto');
+            const tipoId = tipoSelect.value;
+            
+            // Reset messages
+            const successMessage = document.querySelector('#success');
+            const errorMessage = document.querySelector('#error');
+            successMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+
+            const data = {
+              cidadaoId: cidadaoId,
+              projetoLeiDTO: {
+                id: projetoLeiId
+              },
+              tipoDeVoto: tipoId
+            };
+
+            const response = await fetch('/votacao/votar', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+              successMessage.classList.remove('hidden');
+            } else {
+              const body = await response.json();
+              errorMessage.innerHTML = body.message;
+              errorMessage.classList.remove('hidden');
+            }
+          });
+        });
+      </script>
+    </section>
+  </body>
+</html>
+

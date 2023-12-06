@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="pt_PT">
+    <body>
+    <section>
+        <h2>Votacões:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>E contra:</th>
+                    <th>A favor:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${votacoes.empty}">
+                    <td colspan="3">Sem votações em curso</td>
+                </tr>
+                <tr th:each="v : ${votacoes}">
+                    <td th:text="${v.id}">...</td>
+                    <td><a th:href="@{/votacoes/} + ${v.id}" >...</a>/td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

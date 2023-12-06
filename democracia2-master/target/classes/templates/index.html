@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt_PT">
+
+<head>
+    <meta charset="ISO-8859-1" />
+    <title>Spring Boot Application</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+	<div class="flex gap-4">
+		<div class="flex flex-col gap-2">
+			<div class="flex flex-col gap-2 pb-2">
+				<p class="border-b border-slate-200 pb-2"><b>Autenticação</b></p>
+				<span>Criar conta</span>
+				<span>Login</span>
+				<span>Logout</span>
+			</div>
+			<div class="flex flex-col gap-2">
+				<p class="border-b border-slate-200 pb-2"><b>Projetos Lei</b></p>
+				<a href="/projetos-lei/criar">Criar</a>
+				<a href="/projetos-lei/ver-nao-expirados">Ver não expirados</a>
+				<a href="/votacoes">Ver em votação</a>
+				<a href="/projetos-lei/apoiar">Apoiar</a>
+				<a href="/votacao/votar">Votar</a>
+			</div>
+			<div class="flex flex-col gap-2">
+				<p class="border-b border-slate-200 pb-2"><b>Delegado</b></p>
+				<a href="/delegado/escolher">Escolher delegado</a>
+				<span>Torna-me delegado</span>
+			</div>
+		</div>
+		<div class="flex-grow">
+			Homepage
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pt_PT">
+    <body>
+    <section>
+        <h2>Detalhes da votação:</h2>
+            <tr>
+                <th>Id:</th>
+                <td th:text="${votacao.id}"></td>
+            </tr>
+    </section>
+</body>
+</html>
